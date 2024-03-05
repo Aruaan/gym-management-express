@@ -2,12 +2,14 @@ import express, { Router, Request, Response } from "express";
 import connection from "../database";
 
 const router = Router()
+
 interface Member {
   first_name: string;
   last_name: string;
   email: string;
   join_date: Date; 
 }
+
 router.post('/members', async (req: Request, res: Response) =>{
     const newMember: Member = req.body
     
