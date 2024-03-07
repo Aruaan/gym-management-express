@@ -1,68 +1,85 @@
-import express, { Router, Request, Response } from "express";
-import connection from "../database";
+import { Router, Request, Response } from "express";
+import { MemberRepository } from "../repositories/MemberRepository";
+import { memberSchema } from "./member-schema";
+import * as z from 'zod'
 
 const router = Router()
 
-interface Member {
-  first_name: string
-  last_name: string
-  email: string
-  join_date: Date
-}
-
-router.post('/members', async (req: Request, res: Response) =>{
-    const newMember: Member = req.body
-    
-    if(!newMember.first_name || !newMember.last_name || !newMember.email || !newMember.join_date){
-      return res.status(400).send({message:' missing required fields'})
-    }
-
+router.post('/members', async (req: Request, res: Response) => {
     try {
-      const [result] = await (await connection).execute(
-        'INSERT INTO member (first_name, last_name, email, join_date) VALUES (?, ?, ?, ?)',
-        [newMember.first_name, newMember.last_name, newMember.email, newMember.join_date]
-      )
-      res.status(201).json({message: 'Member added'})
-    }
-    catch(error) {
-      res.status(500).send({message:'Error adding member.'})
-    }
-})
-
-router.get('/members', async(req:Request, res:Response) => {
-  try{
-      const[rows] = await (await connection).execute('SELECT * FROM member')
-      res.json(rows)
+    const parsedMember = memberSchema.parse(req.body)
+    const savedMember = await MemberRepository.createAndSave(parsedMember)
+    res.status(201).json(savedMember)
   } catch(error){
-    res.status(500).json({message: "Error fetching members."})
+    if (error instanceof z.ZodError){
+      res.status(400).json({
+        message:'Invalid data types',
+        errors: error.issues
+      })
+    } else res.status(500).json({message: 'Error adding member.'})
   }
 })
 
-router.get('/members/:id', async(req: Request, res: Response) => {
+router.get('/members', async (req:Request, res:Response) => {
   try {
-    const memberId = req.params.id
-    const [rows] = await (await connection).execute('SELECT * FROM member WHERE id = ?', [memberId]) as [Member[], any]
-    if (rows.length === 0){
-      return res.status(404).json({message: 'Id does not exist'})
-    }
-    const member = rows[0]
-    res.json(member)
-  } catch(error){
-      res.status(500).json({message:"Error fetching member."})
+    const members = await MemberRepository.findAll()
+    res.json(members)
+  } catch(error) {
+    res.status(500).json({message: 'Error fetching members.'})
   }
 })
 
-router.delete('/members/:id', async(req: Request, res:Response) => {
+router.get('/members/:id', async (req:Request, res:Response) => {
+  const id = req.params.id
   try {
-    const memberId = req.params.id
-    const [rows] = await (await connection).execute('DELETE FROM member WHERE id = ?', [memberId]) as [Member[], any]
-    if(rows.length === 0){
-      return res.status(404).json({message: 'Id does not exist'})
+    const member = await MemberRepository.findById(id)
+    
+    if(!member) {
+      return res.status(404).json({message: "No member with provided id exists."})
     }
-    res.json({message: "Member sucessfully deleted."})
+
+    res.json (member)
+  } catch (error) {
+    res.status(500).json({message: 'Error fetching member.'})
+
+  }
+})
+
+router.put('/members/:id', async (req: Request, res:Response) => {
+  const id = req.params.id
+  const updateData = req.body
+
+  try {
+    const updatedMember = await MemberRepository.update(id, updateData)
+    if(!updatedMember) {
+      return res.status(404).json({message: "No member with provided id exists."})
+    }
+    res.json(updatedMember)
+  } catch (error) {
+    if (error instanceof z.ZodError){
+      res.status(400).json({
+        message:'Invalid data types',
+        errors: error.issues
+      })
+    } else res.status(500).json({message: 'Error updating member.'})
+  }
+})
+
+router.delete('/members/:id', async (req: Request, res:Response) => {
+  const id = req.params.id
+
+  try {
+    const member = MemberRepository.findById(id)
+    if(!member) {
+      return res.status(404).json({message: "No member with provided id exists."})
+    } else {
+      MemberRepository.delete(id)
+      res.json('Member sucessfully deleted')
+    }
   }catch(error){
-    res.status(500).json({message:'Error deleting member.'})
+    res.status(500).json({message: 'Error deleting member.'})
   }
 })
+
 export default router
 
