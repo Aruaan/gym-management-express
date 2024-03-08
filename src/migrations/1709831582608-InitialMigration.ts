@@ -17,9 +17,6 @@ export class InitialMigration1709831582608 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE \`workouts\` ADD CONSTRAINT \`FK_dcefe37a24049cbbddfc8bfe288\` FOREIGN KEY (\`member_id\`) REFERENCES \`members\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE \`exercises_equipment_equipment\` ADD CONSTRAINT \`FK_dbc9d42686de073c103432c0c5e\` FOREIGN KEY (\`exercisesId\`) REFERENCES \`exercises\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE \`exercises_equipment_equipment\` ADD CONSTRAINT \`FK_1e026e8623c9128a6f3ac145515\` FOREIGN KEY (\`equipmentId\`) REFERENCES \`equipment\`(\`id\`) ON DELETE NO ACTION ON UPDATE NO ACTION`);
-       
-
-
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
