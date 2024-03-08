@@ -4,21 +4,21 @@ import { Member } from "./Member.entity";
 @Entity({name:'measurements'})
 export class Measurement {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
   
   @Column({ type: 'uuid', name: 'member_id' })
-  memberId!: string;
+  memberId: string;
 
   @Column({ type: 'date' })
-  date!: Date;
+  date: Date;
 
   @Column({ type: 'decimal', precision: 5, scale: 2 })
-  weight!: number;
+  weight: number;
   
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true, name: 'bodyfat_percentage' })
-  bodyFatPercentage?: number;
+  bodyFatPercentage: number | null;
 
   @ManyToOne(() => Member, (member) => member.measurements)
   @JoinColumn({ name: 'member_id', referencedColumnName: 'id' })
-  member!: Member;
+  member?: Member;
 }

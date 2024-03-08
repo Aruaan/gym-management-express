@@ -10,7 +10,7 @@ router.post('/members', async (req: Request, res: Response) => {
     const parsedMember = memberSchema.parse(req.body)
     const savedMember = await MemberRepository.createAndSave(parsedMember)
     res.status(201).json(savedMember)
-  } catch(error){
+  } catch (error){
     if (error instanceof z.ZodError){
       res.status(400).json({
         message:'Invalid data types',

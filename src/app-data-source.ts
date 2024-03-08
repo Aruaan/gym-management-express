@@ -12,7 +12,7 @@ export const dataSourceOptions: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: ["src/entities/**/*.entity{.ts,.js}"],
-  synchronize: true,
+  synchronize: false,
   migrations: ["src/migrations/*{.ts,.js}"],
 }
 const dataSource = new DataSource(dataSourceOptions)

@@ -15,12 +15,11 @@ export const MemberRepository = dataSource.getRepository(Member).extend({
         return await this.findOneBy({id})
     },
 
-    async update(id: string, memberData: Partial<Member>): Promise<Member | null> {
+    async update(id: string, memberData: Partial<Member>): Promise<void> {
         await this.manager.update(Member, id, memberData);
-        return await this.findById(id); 
     },
 
-    async delete (id:string): Promise<void > {
+    async delete (id:string): Promise<void> {
         await this.manager.delete(Member,id)
     }
 })

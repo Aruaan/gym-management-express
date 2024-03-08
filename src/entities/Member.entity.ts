@@ -6,26 +6,26 @@ import { Meal } from "./Meal.entity";
 @Entity({name:'members'})
 export class Member {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
 
   @Column({ length: 30, type: "varchar", name: 'first_name' })
-  firstName!: string;
+  firstName: string;
 
   @Column({ length: 30, type: "varchar", name: 'last_name' })
-  lastName!: string;
+  lastName: string;
   
   @Column({ length: 50, type: "varchar" })
-  email!: string;
+  email: string;
   
   @Column({ type: "date", name: 'join_date' })
-  joinDate!: Date;
+  joinDate: Date;
 
   @OneToMany(() => Workout, (workout) => workout.member)
-  workouts!: Workout[];
+  workouts?: Workout[];
 
   @OneToMany(() => Measurement, (measurement) => measurement.member)
-  measurements!: Measurement[];
+  measurements?: Measurement[];
 
   @OneToMany(() => Meal, (meal) => meal.member)
-  meals!: Meal[];
+  meals?: Meal[];
 }

@@ -15,9 +15,9 @@ export const WorkoutRepository = dataSource.getRepository(Workout).extend({
         return await this.findOneBy({id})
     },
 
-    async update(id: string, workoutData: Partial<Workout>): Promise<Workout | null> {
+    async update(id: string, workoutData: Partial<Workout>): Promise<void> {
         await this.manager.update(Workout, id, workoutData);
-        return await this.findById(id); 
+
     },
 
     async delete (id:string): Promise<void > {

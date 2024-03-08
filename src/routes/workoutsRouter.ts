@@ -11,7 +11,7 @@ router.post('/workouts', async (req: Request, res: Response) => {
   const parsedWorkout = workoutSchema.parse(req.body)
   const savedWorkout = await WorkoutRepository.createAndSave(parsedWorkout)
   res.status(201).json(savedWorkout)
-} catch(error){
+} catch (error){
   if (error instanceof z.ZodError){
     res.status(400).json({
       message:'Invalid data types',
@@ -30,11 +30,15 @@ router.get('/workouts', async (req: Request, res: Response) => {
   }
 })
 
-router.get('/members/:memberId/workouts', async (req: Request, res: Response) => {
-  const memberId = req.params.memberId
+router.get('/workouts', async (req: Request, res: Response) => {
+  const memberId = req.query.member_id
+
+  if (!memberId) {
+    return res.status(400).json({message: 'Missing member_id query.'})
+  }
   try {
     const workouts = await WorkoutRepository.find({
-      where: {member: {id: memberId}}
+      where: {member: {id: String (memberId)}}
     })
     res.json({ message: "The member has logged these workouts:", workouts }); 
   } catch (error){
