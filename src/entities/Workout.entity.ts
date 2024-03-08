@@ -1,13 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Member } from "./Member.entity";
 import { Exercise } from "./Exercise.entity";
-export enum WorkoutType {
-  STRENGTH = 'strength',
-  CARDIO = 'cardio',
-  HYPERTROPHY = 'hypertrophy',
-  ENDURANCE = 'endurance',
-  POWERBUILDING = 'powerbuilding'
-}
+import { WorkoutType } from "../enums/Workout.enum";
+
 @Entity({name:'workouts'})
 export class Workout {
   @PrimaryGeneratedColumn('uuid')

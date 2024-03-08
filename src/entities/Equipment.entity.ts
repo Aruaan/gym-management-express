@@ -1,12 +1,6 @@
 import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Exercise } from "./Exercise.entity";
-
-export enum EquipmentType {
-  BARBELL = 'barbell',
-  DUMBBELL = 'dumbbell',
-  MACHINE = 'machine',
-  CARDIO = 'cardio'
-}
+import { EquipmentType } from "../enums/Equipment.enum";
 
 @Entity()
 export class Equipment extends BaseEntity {

@@ -1,4 +1,4 @@
-import { Column, Decimal128, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { Member } from "./Member.entity";
 
 @Entity({name:'meals'})

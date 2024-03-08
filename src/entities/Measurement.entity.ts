@@ -1,4 +1,4 @@
-import { Column, Decimal128, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Member } from "./Member.entity";
 
 @Entity({name:'measurements'})

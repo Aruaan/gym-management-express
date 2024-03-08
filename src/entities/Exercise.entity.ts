@@ -1,11 +1,7 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Workout } from "./Workout.entity";
 import { Equipment } from "./Equipment.entity";
-export enum ExerciseType {
-  STRENGTH = 'strength',
-  CARDIO = 'cardio',
-  HYPERTROPHY = 'hypertrophy'
-}
+import { ExerciseType } from "../enums/Exercise.enum";
 
 @Entity({name:'exercises'})
 export class Exercise {

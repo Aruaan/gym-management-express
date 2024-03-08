@@ -3,8 +3,7 @@ import dataSource from "../app-data-source";
 
 export const WorkoutRepository = dataSource.getRepository(Workout).extend({
     async createAndSave (workoutData: Partial<Workout>){
-        const newWorkout = this.create(workoutData)
-        return await this.save(newWorkout)
+        return await this.save(this.create(workoutData))
     },
 
     async findAll(): Promise<Workout[]>{

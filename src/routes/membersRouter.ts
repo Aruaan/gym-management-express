@@ -50,11 +50,8 @@ router.put('/members/:id', async (req: Request, res:Response) => {
   const updateData = req.body
 
   try {
-    const updatedMember = await MemberRepository.update(id, updateData)
-    if(!updatedMember) {
-      return res.status(404).json({message: "No member with provided id exists."})
-    }
-    res.json(updatedMember)
+    await MemberRepository.update(id, updateData)
+    res.json({message: 'Member updated sucessfully'})
   } catch (error) {
     if (error instanceof z.ZodError){
       res.status(400).json({

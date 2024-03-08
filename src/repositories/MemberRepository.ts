@@ -3,8 +3,7 @@ import dataSource from "../app-data-source";
 
 export const MemberRepository = dataSource.getRepository(Member).extend({
     async createAndSave (memberData: Partial<Member>){
-        const newMember = this.create(memberData)
-        return await this.save(newMember)
+        return await this.save(this.create(memberData))
     },
 
     async findAll(): Promise<Member[]>{
