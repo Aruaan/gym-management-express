@@ -34,7 +34,7 @@ router.get('/workouts', async (req: Request, res: Response) => {
   const memberId = req.query.member_id
 
   if (!memberId) {
-    return res.status(204).json({message: 'Member with that id does not exist.'})
+    return res.status(204)
   }
   try {
     const workouts = await WorkoutRepository.find({

@@ -35,7 +35,7 @@ router.get('/members/:id', async (req:Request, res:Response) => {
     const member = await MemberRepository.findById(id)
     
     if (!member) {
-      return res.status(204).json('Member with that id does not exist.')
+      return res.status(204)
     }
 
     res.json (member)
@@ -48,7 +48,7 @@ router.get('/members/:id', async (req:Request, res:Response) => {
 router.put('/members/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!MemberRepository.findById(id)) res.status(204).json({message:'Member with that id does not exist.'})
+  if (!MemberRepository.findById(id)) res.status(204)
   try {
     await MemberRepository.update(id, updateData)
     res.json({message: 'Member updated sucessfully'})
@@ -68,7 +68,7 @@ router.delete('/members/:id', async (req: Request, res:Response) => {
   try {
     const member = MemberRepository.findById(id)
     if (!member) {
-      return res.status(204).json({message:'Member with that id does not exist.'})
+      return res.status(204)
     } else {
       MemberRepository.delete(id)
       res.json('Member sucessfully deleted')
