@@ -4,8 +4,5 @@ export const memberSchema = z.object({
     firstName: z.string().min(1, 'First name is required'),
     lastName: z.string().min(1, 'Last name is required'),
     email: z.string().email('Invalid email format'), 
-    joinDate: z.preprocess((arg) => {
-        if (typeof arg == 'string') return new Date(arg);
-        return arg;
-    }, z.date())
+    joinDate: z.date().optional()
 });

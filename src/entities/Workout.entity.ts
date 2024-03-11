@@ -25,6 +25,6 @@ export class Workout {
   member?: Member;
 
   @OneToMany(() => Exercise, exercise => exercise.workout)
-  exercise?: Exercise[];
+  exercises?: Exercise[];
 
 }

@@ -2,6 +2,7 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import membersRouter from './routes/membersRouter';
 import workoutsRouter from './routes/workoutsRouter'
+import exercisesRouter from './routes/exercisesRouter'
 import dataSource from './app-data-source';
 import 'reflect-metadata';
 
@@ -15,7 +16,7 @@ app.use(express.json());
 const startServer = async () => {
     try {
         await dataSource.initialize();
-        app.use('/api', membersRouter, workoutsRouter);
+        app.use('/api', membersRouter, workoutsRouter, exercisesRouter);
         app.listen(port, () => {
             console.log(`Server listening on port ${port}`); 
         });
