@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Member } from "./Member.entity";
 
 @Entity({name:'measurements'})
@@ -9,8 +9,8 @@ export class Measurement {
   @Column({ type: 'uuid', name: 'member_id' })
   memberId: string;
 
-  @Column({ type: 'date' })
-  date: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
 
   @Column({ type: 'decimal', precision: 5, scale: 2 })
   weight: number;

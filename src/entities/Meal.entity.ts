@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 import { Member } from "./Member.entity";
 
 @Entity({name:'meals'})
@@ -9,7 +9,7 @@ export class Meal {
   @Column({ type: 'uuid', name: 'member_id' })
   memberId: string;
 
-  @Column({ type: 'datetime', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
   @Column({ length: 40, type: "varchar" })

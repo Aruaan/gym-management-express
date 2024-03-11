@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Workout } from "./Workout.entity";
 import { Equipment } from "./Equipment.entity";
 import { ExerciseType } from "../enums/Exercise.enum";
@@ -11,8 +11,8 @@ export class Exercise {
   @Column('uuid', { name: 'workout_id' })
   workoutId: string;
 
-  @Column({ type: "date" })
-  date: Date;
+  @CreateDateColumn({ type: "timestamp", name: 'created_at' })
+  createdAt: Date;
 
   @Column({ type: 'enum', enum: ExerciseType, nullable: true})
   type: ExerciseType | null;

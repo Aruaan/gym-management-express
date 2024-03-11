@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Exercise } from "./Exercise.entity";
 import { EquipmentType } from "../enums/Equipment.enum";
 
@@ -13,7 +13,7 @@ export class Equipment extends BaseEntity {
   @Column({type: "enum", enum : EquipmentType})
   type: EquipmentType;
 
-  @Column({ type: "date", nullable: true, name: 'purchase_date' })
+  @CreateDateColumn({ type: "timestamp", nullable: true, name: 'purchase_date' })
   purchaseDate: Date | null;
 
   @Column({ length: 255, type: "varchar", nullable: true })

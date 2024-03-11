@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Member } from "./Member.entity";
 import { Exercise } from "./Exercise.entity";
 import { WorkoutType } from "../enums/Workout.enum";
@@ -8,8 +8,8 @@ export class Workout {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'date' })
-  date: Date;
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
+  createdAt: Date;
 
   @Column({ type: 'uuid', name: 'member_id' })
   memberId: string;

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Workout } from "./Workout.entity";
 import { Measurement } from "./Measurement.entity";
 import { Meal } from "./Meal.entity";
@@ -17,7 +17,7 @@ export class Member {
   @Column({ length: 50, type: "varchar" })
   email: string;
   
-  @Column({ type: "date", name: 'join_date' })
+  @CreateDateColumn({ type: "timestamp", name: 'join_date' })
   joinDate: Date;
 
   @OneToMany(() => Workout, (workout) => workout.member)
