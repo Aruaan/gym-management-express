@@ -31,39 +31,6 @@ router.get('/exercises', async (req:Request, res:Response) => {
   }
 })
 
-router.get('/exercises/:id', async (req:Request, res:Response) => {
-  const id = req.params.id
-  try {
-    const exercise = await exerciseRepository.findById(id)
-    
-    if (!exercise) {
-      return res.status(204)
-    }
-
-    res.json (exercise)
-  } catch (error) {
-    res.status(500).json({message: 'Error fetching exercise.'})
-
-  }
-})
-
-router.get('/exercises/:id', async (req:Request, res:Response) => {
-  const id = req.params.id
-  try {
-    const exercise = await exerciseRepository.findById(id)
-    
-    if (!exercise) {
-      return res.status(204)
-    }
-
-    res.json (exercise)
-  } catch (error) {
-    res.status(500).json({message: 'Error fetching exercise.'})
-
-  }
-})
-
-
 router.get('/exercises', async (req: Request, res: Response) => {
   const workoutId = req.query.workout_id
 
@@ -80,8 +47,36 @@ router.get('/exercises', async (req: Request, res: Response) => {
   }
 })
 
+router.get('/exercises/:id', async (req:Request, res:Response) => {
+  const id = req.params.id
+  try {
+    const exercise = await exerciseRepository.findById(id)
+    
+    if (!exercise) {
+      return res.status(204)
+    }
+
+    res.json (exercise)
+  } catch (error) {
+    res.status(500).json({message: 'Error fetching exercise.'})
+
+  }
+})
 
 
+router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
+  try {
+    const exercises = await exerciseRepository.findById(req.params.id)
+    if (!exercises) {res.status(204)}
+    else {
+    const equipment = await exerciseRepository.findEquipmentForExercise(exercises)
+    res.json(equipment)
+    }
+  } catch (error){
+    res.status(500).json({message:'Error fetching equipment that this exercise can be done with'})
+  }
+
+})
 router.put('/exercises/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
