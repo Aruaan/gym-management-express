@@ -17,7 +17,6 @@ router.post('/exercises', async (req: Request, res: Response) => {
         errors: error.issues
       })
     } else{
-      console.error(error)
       res.status(500).json({message: 'Error adding exercise.'})} 
   }
 })
@@ -35,7 +34,7 @@ router.get('/exercises', async (req: Request, res: Response) => {
   const workoutId = req.query.workout_id
 
   if (!workoutId) {
-    return res.status(204)
+    return res.status(404).json({message: 'Workout with that ID not found.'})
   }
   try {
     const exercises = await exerciseRepository.find({
@@ -51,11 +50,9 @@ router.get('/exercises/:id', async (req:Request, res:Response) => {
   const id = req.params.id
   try {
     const exercise = await exerciseRepository.findById(id)
-    
     if (!exercise) {
-      return res.status(204)
+      res.status(404).json('Exercise with that id not found.')
     }
-
     res.json (exercise)
   } catch (error) {
     res.status(500).json({message: 'Error fetching exercise.'})
@@ -67,11 +64,10 @@ router.get('/exercises/:id', async (req:Request, res:Response) => {
 router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
   try {
     const exercises = await exerciseRepository.findById(req.params.id)
-    if (!exercises) {res.status(204)}
-    else {
-    const equipment = await exerciseRepository.findEquipmentForExercise(exercises)
+    if (!exercises) {res.status(404).json({message:'Exercise with that ID not found.'})}
+    const equipment = await exerciseRepository.findEquipmentForExercise(exercises!)
+    if (!equipment) res.sendStatus(204)
     res.json(equipment)
-    }
   } catch (error){
     res.status(500).json({message:'Error fetching equipment that this exercise can be done with'})
   }
@@ -80,10 +76,10 @@ router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
 router.put('/exercises/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!exerciseRepository.findById(id)) res.status(204)
+  if (!await exerciseRepository.findById(id)) res.status(404).json({message: 'Exercise with that id does not exist'})
   try {
     await exerciseRepository.update(id, updateData)
-    res.json({message: 'Exercise updated sucessfully'})
+    res.json(updateData)
   } catch (error) {
     if (error instanceof z.ZodError){
       res.status(400).json({
@@ -98,13 +94,12 @@ router.delete('/exercises/:id', async (req: Request, res:Response) => {
   const id = req.params.id
 
   try {
-    const exercise = exerciseRepository.findById(id)
+    const exercise = await exerciseRepository.findById(id)
     if (!exercise) {
-      return res.status(204)
-    } else {
-      exerciseRepository.delete(id)
-      res.json('Exercise sucessfully deleted')
+      return res.status(404).json({message: 'Exercise with that id does not exist'})
     }
+      exerciseRepository.delete(id)
+      res.sendStatus(204)
   } catch (error){
     res.status(500).json({message: 'Error deleting exercise.'})
   }

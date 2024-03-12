@@ -20,7 +20,7 @@ export class Exercise {
   @Column({ length: 255, type: "varchar", nullable: true })
   notes: string | null ;
 
-  @ManyToOne(() => Workout, workout => workout.exercise)
+  @ManyToOne(() => Workout, workout => workout.exercises)
   @JoinColumn({ name: 'workout_id', referencedColumnName: 'id' })
   workout?: Workout;
 

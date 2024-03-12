@@ -1,7 +1,7 @@
 import { Equipment } from "../entities/Equipment.entity";
 import dataSource from "../app-data-source";
 import { Exercise } from "../entities/Exercise.entity";
-
+import { equipmentAlias, exerciseAlias } from "./ExerciseRepository";
 export const equipmentRepository = dataSource.getRepository(Equipment).extend({
   async createAndSave (equipmentData: Partial<Equipment>){
     return await this.save(this.create(equipmentData))
@@ -24,9 +24,9 @@ async delete (id:string): Promise<void> {
 },
 
 async findExercisesForEquipment(equipment: Equipment): Promise<Exercise[]> {
-  return await this.createQueryBuilder("equipment")
-      .leftJoinAndSelect("equipment.exercises", "exercise")
-      .where("equipment.id = :id", { id: equipment.id })
+  return await this.createQueryBuilder(equipmentAlias)
+      .leftJoinAndSelect("equipment.exercises", exerciseAlias)
+      .where(`${equipmentAlias}.id = :id`, { id: equipment.id })
       .getMany(); 
 }
 })
