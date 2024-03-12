@@ -2,7 +2,7 @@ import { Router, Response, Request } from "express";
 import * as z from 'zod';
 import { equipmentRepository } from "../repositories/EquipmentRepository";
 import { equipmentSchema } from "./equipment-schema";
-
+import { generateEntityNotFound } from "../util/utilFunctions";
 const router = Router()
 
 router.post('/equipments', async (req: Request, res: Response) => {
@@ -33,8 +33,7 @@ router.get('/equipments/:id', async (req:Request, res:Response) => {
   const id = req.params.id
   try {
     const equipment = await equipmentRepository.findById(id)
-    
-    if (!equipment) res.status(404).json({message:'Equipment with that id does not exist.'})
+    if (!equipment) res.status(404).json({message:generateEntityNotFound('Equipment')})
 
     res.json (equipment)
   } catch (error) {
@@ -46,7 +45,7 @@ router.get('/equipments/:id', async (req:Request, res:Response) => {
 router.get('/equipments/:id/exercises', async (req:Request, res:Response) =>{
   try {
     const equipment = await equipmentRepository.findById(req.params.id)
-    if (!equipment) res.status(404).json({message:'Equipment with that id does not exist.'})
+    if (!equipment) res.status(404).json({message:generateEntityNotFound('Equipment')})
     
     const exercises = await equipmentRepository.findExercisesForEquipment(equipment!)
     res.json(exercises)
@@ -62,8 +61,9 @@ router.delete('/equipments/:id', async (req: Request, res:Response) => {
 
   try {
     const equipment = await equipmentRepository.findById(id)
-    if (!equipment) res.status(404).json({message:'Equipment with that id does not exist.'})
-    equipmentRepository.delete(id)
+    if (!equipment) res.status(404).json({message:generateEntityNotFound('Equipment')})
+
+    await equipmentRepository.delete(id)
     res.sendStatus(204)
     
   } catch (error){
@@ -75,7 +75,8 @@ router.delete('/equipments/:id', async (req: Request, res:Response) => {
 router.put('/equipments/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!await equipmentRepository.findById(id)) res.status(204)
+  if (!await equipmentRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Equipment')})
+  
   try {
     await equipmentRepository.update(id, updateData)
     res.json({message: 'Piece of equipment updated sucessfully'})

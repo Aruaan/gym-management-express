@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { MemberRepository } from "../repositories/MemberRepository";
 import { memberSchema } from "./member-schema";
 import * as z from 'zod'
+import { generateEntityNotFound } from "../util/utilFunctions";
 
 const router = Router()
 
@@ -35,7 +36,7 @@ router.get('/members/:id', async (req:Request, res:Response) => {
     const member = await MemberRepository.findById(id)
     
     if (!member) {
-      return res.status(204)
+      return res.status(404).json({message:generateEntityNotFound('Member')})
     }
 
     res.json (member)
@@ -48,7 +49,7 @@ router.get('/members/:id', async (req:Request, res:Response) => {
 router.put('/members/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!MemberRepository.findById(id)) res.status(204)
+  if (!await MemberRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Member')})
   try {
     await MemberRepository.update(id, updateData)
     res.json({message: 'Member updated sucessfully'})
@@ -67,12 +68,11 @@ router.delete('/members/:id', async (req: Request, res:Response) => {
 
   try {
     const member = MemberRepository.findById(id)
-    if (!member) {
-      return res.status(204)
-    } else {
-      MemberRepository.delete(id)
-      res.json('Member sucessfully deleted')
-    }
+    if (!member) return res.status(404).json({message:generateEntityNotFound('Member')})
+  
+    await MemberRepository.delete(id)
+    res.sendStatus(204)
+    
   } catch (error){
     res.status(500).json({message: 'Error deleting member.'})
   }

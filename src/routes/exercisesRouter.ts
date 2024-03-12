@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { exerciseRepository } from "../repositories/ExerciseRepository";
 import { exerciseSchema } from "./exercise-schema";
 import * as z from 'zod'
+import { generateEntityNotFound } from "../util/utilFunctions";
 
 const router = Router()
 
@@ -34,7 +35,7 @@ router.get('/exercises', async (req: Request, res: Response) => {
   const workoutId = req.query.workout_id
 
   if (!workoutId) {
-    return res.status(404).json({message: 'Workout with that ID not found.'})
+    return res.status(404).json({message:generateEntityNotFound('Workout')})
   }
   try {
     const exercises = await exerciseRepository.find({
@@ -51,7 +52,7 @@ router.get('/exercises/:id', async (req:Request, res:Response) => {
   try {
     const exercise = await exerciseRepository.findById(id)
     if (!exercise) {
-      res.status(404).json('Exercise with that id not found.')
+      res.status(404).json({message:generateEntityNotFound('Exercise')})
     }
     res.json (exercise)
   } catch (error) {
@@ -64,7 +65,7 @@ router.get('/exercises/:id', async (req:Request, res:Response) => {
 router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
   try {
     const exercises = await exerciseRepository.findById(req.params.id)
-    if (!exercises) {res.status(404).json({message:'Exercise with that ID not found.'})}
+    if (!exercises) {res.status(404).json({message:generateEntityNotFound('Exercise')})}
     const equipment = await exerciseRepository.findEquipmentForExercise(exercises!)
     if (!equipment) res.sendStatus(204)
     res.json(equipment)
@@ -76,7 +77,7 @@ router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
 router.put('/exercises/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!await exerciseRepository.findById(id)) res.status(404).json({message: 'Exercise with that id does not exist'})
+  if (!await exerciseRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Exercise')})
   try {
     await exerciseRepository.update(id, updateData)
     res.json(updateData)
@@ -95,10 +96,9 @@ router.delete('/exercises/:id', async (req: Request, res:Response) => {
 
   try {
     const exercise = await exerciseRepository.findById(id)
-    if (!exercise) {
-      return res.status(404).json({message: 'Exercise with that id does not exist'})
-    }
-      exerciseRepository.delete(id)
+    if (!exercise) res.status(404).json({message:generateEntityNotFound('Exercise')})
+  
+      await exerciseRepository.delete(id)
       res.sendStatus(204)
   } catch (error){
     res.status(500).json({message: 'Error deleting exercise.'})
