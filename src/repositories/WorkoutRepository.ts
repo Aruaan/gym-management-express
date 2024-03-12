@@ -1,0 +1,25 @@
+import { Workout } from "../entities/Workout.entity";
+import dataSource from "../app-data-source";
+
+export const WorkoutRepository = dataSource.getRepository(Workout).extend({
+    async createAndSave (workoutData: Partial<Workout>){
+        return await this.save(this.create(workoutData))
+    },
+
+    async findAll(): Promise<Workout[]>{
+        return await this.find()
+    },
+
+    async findById(id:string): Promise<Workout | null> {
+        return await this.findOneBy({id})
+    },
+
+    async update(id: string, workoutData: Partial<Workout>): Promise<void> {
+        await this.manager.update(Workout, id, workoutData);
+
+    },
+
+    async delete (id:string): Promise<void > {
+        await this.manager.delete(Workout, id)
+    }
+})

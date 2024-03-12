@@ -1,22 +1,28 @@
-import express, { Express, Request, Response } from 'express'
-import dotenv from 'dotenv'
-import membersRouter from './routes/membersRouter'
-import connection from './database'
-import bodyParser = require('body-parser')
-dotenv.config()
+import express, { Express } from 'express';
+import dotenv from 'dotenv';
+import membersRouter from './routes/membersRouter';
+import workoutsRouter from './routes/workoutsRouter'
+import exercisesRouter from './routes/exercisesRouter'
+import dataSource from './app-data-source';
+import 'reflect-metadata';
 
-const app: Express = express()
-const port = process.env.PORT
+dotenv.config(); 
 
-app.use(bodyParser.json())
+const app: Express = express();
+const port = process.env.PORT;
+
+app.use(express.json()); 
 
 const startServer = async () => {
-    await connection
-    app.use('/api', membersRouter)
-
-    app.listen(port, () => {
-        
-    })
+    try {
+        await dataSource.initialize();
+        app.use('/api', membersRouter, workoutsRouter, exercisesRouter);
+        app.listen(port, () => {
+            console.log(`Server listening on port ${port}`); 
+        });
+    } catch (error) {
+        console.error("Error initializing data source:", error);
+    }
 };
 
-startServer()
+startServer();
