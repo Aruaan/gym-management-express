@@ -10,7 +10,6 @@ const router = Router()
 router.post('/exercises', async (req: Request, res: Response) => {
     try {
     const parsedExercise = exerciseSchema.parse(req.body)
-    console.log(parsedExercise)
     const savedExercise = await exerciseRepository.createAndSave(parsedExercise)
     res.status(201).json(savedExercise)
   } catch (error){
@@ -44,9 +43,7 @@ router.get('/exercises/:id', async (req:Request, res:Response) => {
   const id = req.params.id
   try {
     const exercise = await exerciseRepository.findById(id)
-    if (!exercise) {
-      res.status(404).json({message:generateEntityNotFound('Exercise')})
-    }
+    if (!exercise) return res.status(404).json({message:generateEntityNotFound('Exercise')})
     res.json (exercise)
   } catch (error) {
     res.status(500).json({message: 'Error fetching exercise.'})
@@ -55,12 +52,12 @@ router.get('/exercises/:id', async (req:Request, res:Response) => {
 })
 
 
-router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
+router.get('/exercises/:id/equipments', async (req:Request, res:Response) =>{
   try {
     const exercise = await exerciseRepository.findById(req.params.id)
-    if (!exercise) {res.status(404).json({message:generateEntityNotFound('Exercise')})}
+    if (!exercise) return res.status(404).json({message:generateEntityNotFound('Exercise')})
     const equipment = await exerciseRepository.findEquipmentForExercise(exercise!)
-    if (!equipment) res.sendStatus(204)
+    if (!equipment) return res.sendStatus(204)
     res.json(equipment)
   } catch (error){
     res.status(500).json({message:'Error fetching equipment that this exercise can be done with'})
@@ -70,18 +67,15 @@ router.get('/exercises/:id/equipment', async (req:Request, res:Response) =>{
 
 router.put('/exercises/:id', async (req: Request, res:Response) => {
   const id = req.params.id
-  console.log(id)
 
   const updateData = req.body
-  console.log(updateData)
 
-  if (!await exerciseRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Exercise')})
+  if (!await exerciseRepository.findById(id)) return res.status(404).json({message:generateEntityNotFound('Exercise')})
 
   try {
     const updateResult = await exerciseRepository.update(id, updateData)
-    console.log(updateResult)
 
-    if (!updateResult) res.status(500).json({message: 'Error updating piece of equipment.'})
+    if (!updateResult.affected) return res.status(404).json({message:generateEntityNotFound('Exercise')})
 
     res.json({message: 'Piece of equipment updated sucessfully'})
   } catch (error) {
@@ -99,10 +93,10 @@ router.delete('/exercises/:id', async (req: Request, res:Response) => {
 
   try {
     const exercise = await exerciseRepository.findById(id)
-    if (!exercise) res.status(404).json({message:generateEntityNotFound('Exercise')})
+    if (!exercise) return res.status(404).json({message:generateEntityNotFound('Exercise')})
   
       const deleteResult = await exerciseRepository.delete(id)
-      if (!deleteResult) return res.status(500).json({message: 'Error deleting exercise.'})
+      if (!deleteResult.affected) return res.status(404).json({message:generateEntityNotFound('Exercise')})
       
       res.sendStatus(204)
 

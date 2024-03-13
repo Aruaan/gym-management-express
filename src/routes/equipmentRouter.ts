@@ -33,7 +33,7 @@ router.get('/equipments/:id', async (req:Request, res:Response) => {
   const id = req.params.id
   try {
     const equipment = await equipmentRepository.findById(id)
-    if (!equipment) res.status(404).json({message:generateEntityNotFound('Equipment')})
+    if (!equipment) return res.status(404).json({message:generateEntityNotFound('Equipment')})
 
     res.json (equipment)
   } catch (error) {
@@ -45,7 +45,7 @@ router.get('/equipments/:id', async (req:Request, res:Response) => {
 router.get('/equipments/:id/exercises', async (req:Request, res:Response) =>{
   try {
     const equipment = await equipmentRepository.findById(req.params.id)
-    if (!equipment) res.status(404).json({message:generateEntityNotFound('Equipment')})
+    if (!equipment) return res.status(404).json({message:generateEntityNotFound('Equipment')})
     
     const exercises = await equipmentRepository.findExercisesForEquipment(equipment!)
     res.json(exercises)
@@ -64,7 +64,7 @@ router.delete('/equipments/:id', async (req: Request, res:Response) => {
     if (!equipment) return res.status(404).json({message:generateEntityNotFound('Equipment')})
     
     const deleteResult =  await equipmentRepository.delete(id)
-    if (!deleteResult) return res.status(500).json({message: 'Error deleting piece of equipment.'})
+    if (!deleteResult.affected) return res.status(404).json({message:generateEntityNotFound('Equipment')})
 
     res.sendStatus(204)
     
@@ -77,11 +77,11 @@ router.delete('/equipments/:id', async (req: Request, res:Response) => {
 router.put('/equipments/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!await equipmentRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Equipment')})
+  if (!await equipmentRepository.findById(id)) return res.status(404).json({message:generateEntityNotFound('Equipment')})
 
   try {
     const updateResult = await equipmentRepository.update(id, updateData)
-    if (!updateResult) res.status(500).json({message: 'Error updating piece of equipment.'})
+    if (!updateResult.affected) return res.status(404).json({message:generateEntityNotFound('Equipment')})
 
     res.json({message: 'Piece of equipment updated sucessfully'})
   } catch (error) {
