@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Exercise } from "./Exercise.entity";
 import { EquipmentType } from "../enums/Equipment.enum";
 
@@ -20,5 +20,15 @@ export class Equipment extends BaseEntity {
   notes: string | null;
 
   @ManyToMany(() => Exercise, exercise => exercise.equipment)
+  @JoinTable({
+    name: 'exercise_equipment',
+    joinColumn: {
+      name: 'equipment_id',
+      referencedColumnName: 'id'
+    },
+    inverseJoinColumn : {
+      name: 'exercise_id',
+      referencedColumnName: 'id'
+    }})
   exercises?: Exercise[];
 }

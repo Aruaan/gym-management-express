@@ -26,5 +26,4 @@ export class Workout {
 
   @OneToMany(() => Exercise, exercise => exercise.workout)
   exercises?: Exercise[];
-
 }
