@@ -71,7 +71,7 @@ router.delete('/workouts/:id', async (req: Request, res:Response) => {
 router.put('/workouts/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!await WorkoutRepository.findById(id)) return res.status(404).json({message:generateEntityNotFound('Equipment')})
+  if (!await WorkoutRepository.findById(id)) return res.status(404).json({message:generateEntityNotFound('Workout')})
 
   try {
 
