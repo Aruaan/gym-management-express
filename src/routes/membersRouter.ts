@@ -51,7 +51,7 @@ router.put('/members/:id', async (req: Request, res:Response) => {
 
   try {
     const updateResult = await MemberRepository.update(id, updateData)
-    if (!updateResult) return res.status(404).json({message:generateEntityNotFound('Member')})
+    if (!updateResult.affected) return res.status(404).json({message:generateEntityNotFound('Member')})
 
     res.json({message: 'Member updated sucessfully'})
   } catch (error) {
@@ -69,8 +69,9 @@ router.delete('/members/:id', async (req: Request, res:Response) => {
   try {
     const member = await MemberRepository.findById(id)
     if (!member) return res.status(404).json({message:generateEntityNotFound('Member')})
+
     const deleteResult = await MemberRepository.delete(id)
-    if (!deleteResult) return res.status(500).json({message: 'Error deleting member.'})
+    if (!deleteResult.affected) return res.status(404).json({message:generateEntityNotFound('Member')})
 
     res.sendStatus(204) 
     
