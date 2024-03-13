@@ -7,18 +7,34 @@ export const MemberRepository = dataSource.getRepository(Member).extend({
     },
 
     async findAll(): Promise<Member[]>{
-        return await this.find()
+        return await this
+            .createQueryBuilder('members')
+            .getMany()
     },
-
+    
     async findById(id:string): Promise<Member | null> {
-        return await this.findOneBy({id})
+        return await this
+            .createQueryBuilder('members')
+            .where('id = :id', { id })
+            .getOne()
     },
-
-    async update(id: string, memberData: Partial<Member>): Promise<void> {
-        await this.manager.update(Member, id, memberData);
+    
+    async update(id: string, updateData: Partial<Member>): Promise<boolean> {
+        return await this
+            .createQueryBuilder()
+            .update(Member)
+            .set(updateData)
+            .where("id = :id", { id })
+            .execute();
+    
     },
-
-    async delete (id:string): Promise<void> {
-        await this.manager.delete(Member,id)
-    }
+    
+    async delete (id:string): Promise<boolean> {
+        return await this
+             .createQueryBuilder()
+             .delete()
+             .from(Member)
+             .where('id= :id', {id})
+             .execute()
+     },
 })

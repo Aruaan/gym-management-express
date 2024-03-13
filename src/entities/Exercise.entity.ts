@@ -11,6 +11,18 @@ export class Exercise {
   @Column('uuid', { name: 'workout_id' })
   workoutId: string;
 
+  @Column({ length: 40, type: "varchar" })
+  name: string;
+
+  @Column({ type: "int" })  
+  setCount: number;
+
+  @Column({ type: "int" })  
+  repCount: number;
+
+  @Column({ type: "float" })  
+  weight: number; 
+
   @CreateDateColumn({ type: "timestamp", name: 'created_at' })
   createdAt: Date;
 

@@ -61,14 +61,16 @@ router.delete('/equipments/:id', async (req: Request, res:Response) => {
 
   try {
     const equipment = await equipmentRepository.findById(id)
-    if (!equipment) res.status(404).json({message:generateEntityNotFound('Equipment')})
+    if (!equipment) return res.status(404).json({message:generateEntityNotFound('Equipment')})
+    
+    const deleteResult =  await equipmentRepository.delete(id)
+    if (!deleteResult) return res.status(500).json({message: 'Error deleting piece of equipment.'})
 
-    await equipmentRepository.delete(id)
     res.sendStatus(204)
     
   } catch (error){
     res.status(500).json({message: 'Error deleting piece of equipment.'})
-  }
+  } 
 })
 
 
@@ -76,9 +78,11 @@ router.put('/equipments/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
   if (!await equipmentRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Equipment')})
-  
+
   try {
-    await equipmentRepository.update(id, updateData)
+    const updateResult = await equipmentRepository.update(id, updateData)
+    if (!updateResult) res.status(500).json({message: 'Error updating piece of equipment.'})
+
     res.json({message: 'Piece of equipment updated sucessfully'})
   } catch (error) {
     if (error instanceof z.ZodError){

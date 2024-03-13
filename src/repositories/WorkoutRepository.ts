@@ -7,19 +7,35 @@ export const WorkoutRepository = dataSource.getRepository(Workout).extend({
     },
 
     async findAll(): Promise<Workout[]>{
-        return await this.find()
+        return await this
+            .createQueryBuilder('workouts')
+            .getMany()
     },
-
+    
     async findById(id:string): Promise<Workout | null> {
-        return await this.findOneBy({id})
+        return await this
+            .createQueryBuilder('workouts')
+            .where('id = :id', { id })
+            .getOne()
     },
-
-    async update(id: string, workoutData: Partial<Workout>): Promise<void> {
-        await this.manager.update(Workout, id, workoutData);
-
+    
+    async update(id: string, updateData: Partial<Workout>): Promise<boolean> {
+        return await this
+            .createQueryBuilder()
+            .update(Workout)
+            .set(updateData)
+            .where("id = :id", { id })
+            .execute();
+    
     },
-
-    async delete (id:string): Promise<void > {
-        await this.manager.delete(Workout, id)
-    }
+    
+    async delete (id:string): Promise<boolean> {
+        return await this
+             .createQueryBuilder()
+             .delete()
+             .from(Workout)
+             .where('id= :id', {id})
+             .execute()
+     
+     },
 })

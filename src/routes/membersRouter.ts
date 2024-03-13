@@ -35,10 +35,8 @@ router.get('/members/:id', async (req:Request, res:Response) => {
   try {
     const member = await MemberRepository.findById(id)
     
-    if (!member) {
-      return res.status(404).json({message:generateEntityNotFound('Member')})
-    }
-
+    if (!member) return res.status(404).json({message:generateEntityNotFound('Member')})
+    
     res.json (member)
   } catch (error) {
     res.status(500).json({message: 'Error fetching member.'})
@@ -49,9 +47,12 @@ router.get('/members/:id', async (req:Request, res:Response) => {
 router.put('/members/:id', async (req: Request, res:Response) => {
   const id = req.params.id
   const updateData = req.body
-  if (!await MemberRepository.findById(id)) res.status(404).json({message:generateEntityNotFound('Member')})
+  if (!await MemberRepository.findById(id)) return res.status(404).json({message:generateEntityNotFound('Member')})
+
   try {
-    await MemberRepository.update(id, updateData)
+    const updateResult = await MemberRepository.update(id, updateData)
+    if (!updateResult) return res.status(404).json({message:generateEntityNotFound('Member')})
+
     res.json({message: 'Member updated sucessfully'})
   } catch (error) {
     if (error instanceof z.ZodError){
@@ -65,13 +66,13 @@ router.put('/members/:id', async (req: Request, res:Response) => {
 
 router.delete('/members/:id', async (req: Request, res:Response) => {
   const id = req.params.id
-
   try {
-    const member = MemberRepository.findById(id)
+    const member = await MemberRepository.findById(id)
     if (!member) return res.status(404).json({message:generateEntityNotFound('Member')})
-  
-    await MemberRepository.delete(id)
-    res.sendStatus(204)
+    const deleteResult = await MemberRepository.delete(id)
+    if (!deleteResult) return res.status(500).json({message: 'Error deleting member.'})
+
+    res.sendStatus(204) 
     
   } catch (error){
     res.status(500).json({message: 'Error deleting member.'})
